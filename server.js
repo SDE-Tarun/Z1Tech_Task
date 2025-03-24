@@ -1,11 +1,14 @@
 const express = require("express")
 const axios = require("axios")
+const cors = require("cors");
+// Add this near the top after initializing the app
 const path = require("path")
 require("dotenv").config()
 
 const app = express()
 const PORT = process.env.PORT || 8080
 
+app.use(cors());
 app.use(express.static(path.join(__dirname,"client","build")))
 
 app.get("/api/breeds",async(req,res)=>{

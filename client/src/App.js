@@ -7,11 +7,6 @@ const[selectedBreed,setSelectedBreed]=useState("")
 const[cats,setCats]=useState([])
 const[loading,setLoading]=useState(false)
 
-useEffect(()=>{
-fetchBreeds()
-fetchCats()
-},[])
-
 async function fetchBreeds(){
 setLoading(true)
 let r=await axios.get("/api/breeds")
@@ -21,11 +16,27 @@ setLoading(false)
 
 async function fetchCats(breedId="",append=false){
 setLoading(true)
-let r=await axios.get("/api/images",{params:{breedId,limit:9}})
-let data=append?[...cats,...r.data]:r.data
+try {
+console.log(`Fetching cats with breedId: ${breedId}, limit: 9`);
+let r = await axios.get("/api/images", {
+params: {breedId, limit: 9}
+})
+console.log("Response received:", r.data);
+let data = append ? [...cats, ...r.data] : r.data
 setCats(data)
+} catch (error) {
+console.error("Error fetching cats:", error);
+// Optionally show an error message to the user
+} finally {
 setLoading(false)
 }
+}
+
+useEffect(()=>{
+fetchBreeds()
+fetchCats()
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[])
 
 function handleBreedChange(e){
 setSelectedBreed(e.target.value)
